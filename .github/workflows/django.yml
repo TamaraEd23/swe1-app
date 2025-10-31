@@ -59,13 +59,18 @@ jobs:
       run: |
         pip install awsebcli
     
-    - name: Configure AWS credentials
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+        aws-region: us-east-1
     
     - name: Deploy to Elastic Beanstalk
       run: |
-        eb deploy swe-env --region us-west-2
+        # Install EB CLI
+        pip install awsebcli
+
+        # Deploy to EB
+        eb init -p python-3.13 Tamaras_Poll_App --region us-east-1
+        eb deploy Tamaras-Poll-Env

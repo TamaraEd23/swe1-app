@@ -35,20 +35,9 @@ jobs:
       - name: Verify AWS identity (debug)
         run: aws sts get-caller-identity
 
-      - name: (Optional) Show .elasticbeanstalk folder
-        run: ls -la .elasticbeanstalk || echo ".elasticbeanstalk not present"
-
-      - name: Initialize EB non-interactively (only if .elasticbeanstalk not committed)
-        if: ${{ !always() }} # this is a noop — keep an option below if you want it active
+      - name: Initialize EB CLI
         run: |
-          # NOTE: interactive eb init can hang CI. Prefer committing .elasticbeanstalk to repo.
-          # Uncomment and edit the following line if you prefer CI to run eb init.
-          # eb init "django-tutorial" --region us-west-2 --platform "Python 3.12 running on 64bit Amazon Linux 2023"
+          eb init "swe1-app" --region us-west-2 --platform "Python 3.12 running on 64bit Amazon Linux 2023"
 
       - name: Deploy to Elastic Beanstalk
-        env:
-          AWS_REGION: us-west-2
-        run: |
-          # Use the environment name shown in your local `eb status` output:
-          eb status
-          eb deploy django-env --region us-west-2 --label "${{ github.sha }}"
+        run: eb deploy django-env --region us-west-2

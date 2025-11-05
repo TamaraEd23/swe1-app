@@ -83,30 +83,7 @@ jobs:
       run: |
         eb use django-env
     
-    - name: Check environment status
-      run: |
-        eb status django-env
-    
     - name: Deploy to Elastic Beanstalk
       run: |
-        # Wait for environment to be ready and deploy
-        max_attempts=30
-        attempt=0
-        while [ $attempt -lt $max_attempts ]; do
-          status=$(eb status | grep "Status:" | awk '{print $2}')
-          echo "Environment status: $status (attempt $((attempt+1))/$max_attempts)"
-          
-          if [ "$status" = "Ready" ]; then
-            echo "Environment is ready, starting deployment..."
-            eb deploy --timeout 20
-            exit 0
-          fi
-          
-          echo "Waiting 30 seconds for environment to be ready..."
-          sleep 30
-          attempt=$((attempt+1))
-        done
-        
-        echo "Environment did not become ready in time"
-        exit 1
+        eb deploy django-env
 

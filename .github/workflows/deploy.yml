@@ -73,11 +73,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
     
-    - name: Initialize EB CLI
+    - name: Initialize EB CLI (non-interactive)
       run: |
-        eb init django-tutorial --platform "Python 3.12" --region us-west-2
+        eb init django-tutorial \
+          --platform "Python 3.12 running on 64bit Amazon Linux 2023" \
+          --region us-west-2
+    
+    - name: Use existing environment
+      run: |
+        eb use django-env
     
     - name: Deploy to Elastic Beanstalk
       run: |
-        eb deploy django-env --region us-west-2
+        eb deploy django-env
 

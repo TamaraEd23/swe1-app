@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-f404*9g*of8q$@n4p-ojdsvuep%@gx15kabenpofib5rqy8_95"
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-f404*9g*of8q$@n4p-ojdsvuep%@gx15kabenpofib5rqy8_95"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# For local development, DEBUG defaults to True if SECRET_KEY contains "insecure"
+DEBUG = os.environ.get("DJANGO_DEBUG", "True" if "insecure" in SECRET_KEY else "False") == "True"
 
-ALLOWED_HOSTS = ["django-env.eba-xmagzwfs.us-west-2.elasticbeanstalk.com"]
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost,127.0.0.1,django-env.eba-xmagzwfs.us-west-2.elasticbeanstalk.com"
+).split(",")
 
 
 # Application definition
@@ -121,3 +129,24 @@ STATIC_ROOT = "static"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Production Security Settings
+# https://docs.djangoproject.com/en/5.2/ref/settings/#security
+
+# HTTPS/SSL Settings
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
+# HSTS (HTTP Strict Transport Security) Settings
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+
+# Additional Security Headers
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+
+# Secure Proxy SSL Header (for AWS Elastic Beanstalk / Load Balancers)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -23,16 +23,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "django-insecure-f404*9g*of8q$@n4p-ojdsvuep%@gx15kabenpofib5rqy8_95"
+    "django-insecure-f404*9g*of8q$@n4p-ojdsvuep%@gx15kabenpofib5rqy8_95",
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # For local development, DEBUG defaults to True if SECRET_KEY contains "insecure"
-DEBUG = os.environ.get("DJANGO_DEBUG", "True" if "insecure" in SECRET_KEY else "False") == "True"
+DEBUG = (
+    os.environ.get("DJANGO_DEBUG", "True" if "insecure" in SECRET_KEY else "False")
+    == "True"
+)
 
 ALLOWED_HOSTS = os.environ.get(
     "DJANGO_ALLOWED_HOSTS",
-    "localhost,127.0.0.1,django-env.eba-xmagzwfs.us-west-2.elasticbeanstalk.com"
+    "localhost,127.0.0.1,django-env.eba-xmagzwfs.us-west-2.elasticbeanstalk.com",
 ).split(",")
 
 
